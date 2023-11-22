@@ -20,20 +20,24 @@ namespace Xử_lý_giao_dịch_ngân_hàng
             InitializeComponent();
         }
 
-        // Nhập danh sách khách hàng từ tập tin
+        // Tạo danh sách khách hàng để thao tác
         private readonly List<KhachHang> DS_KhachHang = new List<KhachHang>();
+        // Đọc danh sách khách hàng từ tập tin khách hàng
         private void DocDanhSachKhachHang()
         {
+            // Nếu không tìm thấy tập tin khách hàng: Báo lỗi, đóng cửa sổ
             if(!File.Exists(KHpath))
             {
                 MessageBox.Show("Không tìm thấy tập tin khách hàng", "Lỗi tập tin", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
+            // Nếu tập tin khách hàng trống
             else if(new FileInfo(KHpath).Length == 0)
             {
                 MessageBox.Show("Không có khách hàng trong tập tin", "Lỗi khách hàng", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
+            // Nhập thông tin khách hàng từ tập tin
             else
             {
                 var DS = File.ReadLines(KHpath);
@@ -46,6 +50,7 @@ namespace Xử_lý_giao_dịch_ngân_hàng
                 }
             }
         }
+        // Tìm kiếm khách hàng thông qua ID, sau đó trả về có tìm thấy khách hàng hay không, nếu có xuất khách hàng với mã đã nhập
         private bool TimKiemKhachHang(string ID_TimKiem, out KhachHang khach_OUT)
         {
             if(ID_TimKiem == null)
@@ -65,17 +70,18 @@ namespace Xử_lý_giao_dịch_ngân_hàng
             khach_OUT = null;
             return false;
         }
+        // Làm trống các trường nhập và xuất
         private void Clear_WinForm()
         {
-            //IN_MaKhachHang.Clear();
             OP_TenKhachHang.Text = "";
             OP_SoDu.Text = "";
             IN_LuongTien.Clear();
         }
+        // Hiển thị
         private void IN_MaKhachHang_TextChanged(object sender, EventArgs e)
         {
-            bool timkiem = TimKiemKhachHang(IN_MaKhachHang.Text, out KhachHang khach);
-            if (timkiem)
+            // Hiển thị thông tin khách hàng và số dư
+            if (TimKiemKhachHang(IN_MaKhachHang.Text, out KhachHang khach))
             {
                 OP_TenKhachHang.Text = khach.TenKhachHang;
                 OP_SoDu.Text = khach.SoDu.ToString();
